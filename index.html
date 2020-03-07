@@ -32,14 +32,14 @@
         </nav>
         <div class="m-auto col-md-6 d-flex row justify-content-between">
             <h4>正在进行</h4>
-            <span class="circle">0</span>
+            <span class="circle">{{unfinished.length}}</span>
         </div>
         <ul class="m-auto col-md-6">
             <not-done-li v-for="(item, index) in unfinished" :item="item" :index="index" v-on:delete-this="del" @change-checked="changeChecked"></not-done-li>
         </ul>
         <div class="m-auto col-md-6 d-flex row justify-content-between">
             <h4>已经完成</h4>
-            <span class="circle">0</span>
+            <span class="circle">{{finished.length}}</span>
         </div>
         <ul class="m-auto col-md-6">
             <not-done-li v-for="(item, index) in finished" :item="item" :index="index" v-on:delete-this="del" @change-checked="changeChecked"></not-done-li>
