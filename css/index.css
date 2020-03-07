@@ -1,0 +1,67 @@
+body{
+    background-color: rgb(206, 206, 206);
+}
+*{
+    list-style-type: none;
+}
+.text-light{
+    color: rgb(206, 206, 206);
+}
+
+.circle{
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-color: rgb(218, 229, 253);
+    color: rgb(87, 92, 114);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.notDoneLi{
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    border-left: 5px solid rgb(77, 158, 154);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.doneLi{
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    border-left: 5px solid rgb(170, 170, 170);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.delete{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    /* border:2px solid red; */
+    color: white;
+    font-size: 16px;
+    background-color: red;
+    cursor: pointer;
+}
+
+footer{
+    color: rgb(80, 80, 80);
+    font-size: 14px;
+}
+.clear{
+    color: rgb(163, 163, 163);
+    cursor: pointer;
+}
