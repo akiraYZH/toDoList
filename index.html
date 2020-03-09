@@ -46,9 +46,9 @@
                 </div>
             
                 <ul class="m-auto col-md-6">
-                    <li class="notDoneLi" v-for="(item, index) in unfinished">
+                    <li class="notDoneLi" v-for="(item, index) in unfinished" >
                         <div>
-                            <input type="checkbox" class="mr-2 ml-2" :checked="item.is_finished"  @change="$emit('change-checked', item.id)"/>
+                            <input type="checkbox" class="mr-2 ml-2" :checked="item.is_finished"  @change="$emit('change-checked', item.id)" :key="item.id"/>
                             {{item.content}}
                         </div>
                         <span class="delete" @click="$emit('delete-this', item.id) ">X</span>
@@ -75,9 +75,9 @@
                     <span class="circle">{{finished.length}}</span>
                 </div>
                 <ul class="m-auto col-md-6">
-                    <li class="doneLi" v-for="(item, index) in finished">
+                    <li class="doneLi" v-for="(item, index) in finished" :key="index">
                         <div>
-                            <input type="checkbox" class="mr-2 ml-2" :checked="item.is_finished"  @change="$emit('change-checked', item.id)" />
+                            <input type="checkbox" class="mr-2 ml-2" :checked="item.is_finished"  @change="$emit('change-checked', item.id)" :key="item.id"/>
                             {{item.content}}
                         </div>
                         <span class="delete" @click="$emit('delete-this', item.id)">X</span>
@@ -87,26 +87,35 @@
             props:['to-do-list'],
             computed:{
                 finished:function(){
-                    console.log(123);
                     
                     return this.toDoList.filter(item=>{
                         return item.is_finished;
                     })
                 }
             }
-            // computed:
+            
         };
         
-
-
+        //load saved data
+        let savedData=eval(localStorage.getItem('toDoList'));
+        try{
+            savedData.forEach(item=>{
+            item.id=Symbol();
+            })
+        }catch{
+            console.log(1);
+            
+            savedData=null;
+        }
+        
 
         //app
         let app = new Vue({
             el:'#app',
             data:{
-                id:0,
+                // id:0,
                 content:'',
-                toDoList:[]
+                toDoList:savedData||[]
             },
             methods:{
                 add:function(){
@@ -115,11 +124,14 @@
                         return;
                     }
                     this.toDoList.unshift({
-                        id:++this.id,
+                        id:Symbol(),
                         content:this.content.trim(),
                         is_finished:false
                     })
                     this.content='';
+                    localStorage.setItem('toDoList', JSON.stringify(this.toDoList));
+                    
+                    
                 },
                 del:function(id){
                     this.toDoList= this.toDoList.filter(item=>{
@@ -129,15 +141,20 @@
                             return true;
                         }
                     })
-                    
+                    localStorage.setItem('toDoList', JSON.stringify(this.toDoList));
                 },
                 changeChecked:function(id){
                     
                     this.toDoList.forEach(item=>{
+                        
+                        
                         if(item.id==id){
+                            
+                            console.log(item.id==id);
                             item.is_finished=!item.is_finished;
                         }
-                    })
+                    });
+                    localStorage.setItem('toDoList', JSON.stringify(this.toDoList));
                 }
             },
             components:{
