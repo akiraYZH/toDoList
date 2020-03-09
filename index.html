@@ -26,7 +26,7 @@
             <!-- Navbar content -->
             <div class="m-auto col-md-6 d-flex row justify-content-between">
                 <h3 class="text-light">ToDoList</h2>
-                <input type="text" class="form-control col-8" @keyup.enter="add" v-model="content">
+                <input type="text" class="form-control col-8" @keyup.enter="add" v-model.trim="content">
             </div>
             
         </nav>
@@ -97,6 +97,10 @@
             },
             methods:{
                 add:function(){
+                    if(this.content.length==0){
+                        alert('Please enter todo content.');
+                        return;
+                    }
                     this.toDoList.push({
                         content:this.content.trim(),
                         is_finished:false
