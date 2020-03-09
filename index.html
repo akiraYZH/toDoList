@@ -30,47 +30,71 @@
             </div>
             
         </nav>
-        <div class="m-auto col-md-6 d-flex row justify-content-between">
-            <h4>正在进行</h4>
-            <span class="circle">{{unfinished.length}}</span>
-        </div>
-        <ul class="m-auto col-md-6">
-            <not-done-li v-for="(item, index) in unfinished" :item="item" :index="index" v-on:delete-this="del" @change-checked="changeChecked"></not-done-li>
-        </ul>
-        <div class="m-auto col-md-6 d-flex row justify-content-between">
-            <h4>已经完成</h4>
-            <span class="circle">{{finished.length}}</span>
-        </div>
-        <ul class="m-auto col-md-6">
-            <not-done-li v-for="(item, index) in finished" :item="item" :index="index" v-on:delete-this="del" @change-checked="changeChecked"></not-done-li>
-        </ul>
+        <not-done-ul :to-do-list="toDoList" @change-checked="changeChecked" v-on:delete-this="del"></not-done-ul>
+        <done-ul :to-do-list="toDoList" @change-checked="changeChecked" v-on:delete-this="del"></done-ul>
         <footer class="text-center">There is no Copyright :) <span @click="toDoList=[]" class="clear">clear</span></footer>
     </div>
     
     <script>
-        let notDoneLi = {
+        let notDoneUl = {
             template: 
-            `<li class="notDoneLi">
-                <div>
-                    <input type="checkbox" class="mr-2 ml-2" :checked="item.is_finished"  @change="$emit('change-checked', index)"/>
-                    {{item.content}}
+            `
+            <div>
+                <div class="m-auto col-md-6 d-flex row justify-content-between">
+                    <h4>正在进行</h4>
+                    <span class="circle">{{unfinished.length}}</span>
                 </div>
-                <span class="delete" @click="$emit('delete-this', index) ">X</span>
-            </li>`,
-            props:['item', 'index']
+            
+                <ul class="m-auto col-md-6">
+                    <li class="notDoneLi" v-for="(item, index) in unfinished">
+                        <div>
+                            <input type="checkbox" class="mr-2 ml-2" :checked="item.is_finished"  @change="$emit('change-checked', item.id)"/>
+                            {{item.content}}
+                        </div>
+                        <span class="delete" @click="$emit('delete-this', item.id) ">X</span>
+                    </li>
+                </ul>
+            </div>`,
+            props:['to-do-list'],
+            computed:{
+                unfinished:function(){ 
+                    return this.toDoList.filter(item=>{
+                        return !item.is_finished;
+                    })
+                }
+            }
         };
 
 
-        let doneLi = {
+        let doneUl = {
             template: 
-            `<li class="doneLi">
-                <div>
-                    <input type="checkbox" class="mr-2 ml-2" :checked="item.is_finished"  @change="$emit('change-checked', index)" />
-                    {{item.content}}
+            `
+            <div>
+                <div class="m-auto col-md-6 d-flex row justify-content-between">
+                    <h4>已经完成</h4>
+                    <span class="circle">{{finished.length}}</span>
                 </div>
-                <span class="delete" @click="$emit('delete-this', index) ">X</span>
-            </li>`,
-            props:['item', 'index']
+                <ul class="m-auto col-md-6">
+                    <li class="doneLi" v-for="(item, index) in finished">
+                        <div>
+                            <input type="checkbox" class="mr-2 ml-2" :checked="item.is_finished"  @change="$emit('change-checked', item.id)" />
+                            {{item.content}}
+                        </div>
+                        <span class="delete" @click="$emit('delete-this', item.id)">X</span>
+                    </li>
+                </ul>
+            </div>`,
+            props:['to-do-list'],
+            computed:{
+                finished:function(){
+                    console.log(123);
+                    
+                    return this.toDoList.filter(item=>{
+                        return item.is_finished;
+                    })
+                }
+            }
+            // computed:
         };
         
 
@@ -80,20 +104,9 @@
         let app = new Vue({
             el:'#app',
             data:{
+                id:0,
                 content:'',
                 toDoList:[]
-            },
-            computed:{
-                unfinished:function(){
-                    return this.toDoList.filter(item=>{
-                        return !item.is_finished;
-                    })
-                },
-                finished:function(){
-                    return this.toDoList.filter(item=>{
-                        return item.is_finished;
-                    })
-                }
             },
             methods:{
                 add:function(){
@@ -101,25 +114,36 @@
                         alert('Please enter todo content.');
                         return;
                     }
-                    this.toDoList.push({
+                    this.toDoList.unshift({
+                        id:++this.id,
                         content:this.content.trim(),
                         is_finished:false
                     })
                     this.content='';
                 },
-                del:function(index){
-                    this.toDoList.splice(index,1);
+                del:function(id){
+                    this.toDoList= this.toDoList.filter(item=>{
+                        if(item.id==id){
+                            return false
+                        }else{
+                            return true;
+                        }
+                    })
                     
                 },
-                changeChecked:function(index){
-                    console.log(123);
+                changeChecked:function(id){
+                    // console.log(123);
                     
-                    this.toDoList[index].is_finished=!this.toDoList[index].is_finished;
+                    this.toDoList.forEach(item=>{
+                        if(item.id==id){
+                            item.is_finished=!item.is_finished;
+                        }
+                    })
                 }
             },
             components:{
-                "not-done-li":notDoneLi,
-                "done-li":doneLi
+                "not-done-ul":notDoneUl,
+                "done-ul":doneUl
             }
         });
     </script>
